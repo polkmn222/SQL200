@@ -1,0 +1,98 @@
+-- EXAM179
+DROP TABLE NAIVE_FLU_TRAIN;
+CREATE TABLE VAIVE_FLU_TRAIN
+(PATIENT_ID     NUMBER(10),
+ CHILLS         VARCHAR2(2),
+ RUNNY_NOSE     VARCHAR2(2),
+ HEADACHE       VARCHAR2(10),
+ FEVER          VARCHAR2(2),
+ FLU            VARCHAR2(2));
+
+INSERT INTO NAIVE_FLU_TRAIN VALUES(1,'Y','N','MILD','Y','N');
+INSERT INTO NAIVE_FLU_TRAIN VALUES(2,'Y','Y','NO'	,'N', 'Y');
+INSERT INTO NAIVE_FLU_TRAIN VALUES(3,'Y','N','STRONG','Y','Y');
+INSERT INTO NAIVE_FLU_TRAIN VALUES(4,'N','Y','MILD','Y','Y');
+INSERT INTO NAIVE_FLU_TRAIN VALUES(5,'N','N','NO','N','N');
+INSERT INTO NAIVE_FLU_TRAIN VALUES(6,'N','Y','STRONG','Y','Y');
+INSERT INTO NAIVE_FLU_TRAIN VALUES(7,'N','Y','STRONG','N','N');
+INSERT INTO NAIVE_FLU_TRAIN VALUES(8,'Y','Y','MILD','Y','Y');
+COMMIT;
+
+-- EXAM180
+SET SERVEROUTPUT ON
+SET VERIFY OFF
+
+ACCEPT P_CHILLS PROMPT '오한이 있습니까(Y/N) ?'
+ACCEPT P_RUNNY_NOSE PROMPT '콧물이 있습니?(Y/N) ?'
+ACCEPT P_HEAD_ACHE PROMPT '두통이 있습니까(Y/N) ?'
+ACCEPT P_FEVER PROMPT '열이 있습니까(Y/N) ?'
+
+DECLARE
+    V_PRED      VARCHAR2(20);
+    V_PROB      NUMBER(10, 2);
+    
+BEGIN
+WITH TEST_DATA AS (SELECT UPPER('&P_CHILLS') CHILLS,
+                    UPPER('&P_RUNNY_NOSE') RUNNY_NOSE,
+                    UPPER('&P_HEAD_ACHE') HEADACHE,
+                    UPPER('&P_FEVER') FEVER
+                    FROM DUAL)
+SELECT PREDICTION (MD_CLASSIFICATION_MODEL USING *),
+        PREDICTION_PROBABILITY(MD_CLASSIFICATION_MODEL USING *) INTO V_PRED, V_PROB
+FROM TEST_DATA;
+
+    IF V_PRED = 'Y' THEN
+    
+        DBMS_OUTPUT.PUT_LINE('머신러닝이 예측한 결과: 독감입니다.
+                                    독감일 확률은 ' || ROUND(V_PROB, 2) * 100 || '%입니다');
+                                    
+    ELSE
+DBMS_OUTPUT.PUT_LINE('머신러닝이 예측한 결과: 독감이 아닙니다.
+                                    독감일 확률은 ' || ROUND(V_PROB, 2) * 100 || '%입니다');
+                                    
+    END IF;
+END;
+/
+
+-- EXAM181
+CREATE TABLE MUSHROOMS
+(ID                         NUMBER(10),
+ TYPE                       VARCHAR2(10),
+ CAP_SHAPE                  VARCHAR2(10),
+ CAP_SURFACE                VARCHAR2(10),
+ CAP_COLOR                  VARCHAR2(10),
+ BRUISES                    VARCHAR2(10),
+ OROR                       VARCHAR2(10),
+ GILL_ATTACHMENT            VARCHAR2(10),
+ GILL_SPACING               VARCHAR2(10),
+ GILL_SIZE                  VARCHAR2(10),
+ GILL_COLOR                 VARCHAR2(10),
+ STALK_SHAPE                VARCHAR2(10),
+ STARK_ROOT                 VARCHAR2(10),
+ STALK_SURFACE_ABOBE_RING   VARCHAR2(10),
+ STALK_SURFACE_BELOW_RING   VARCHAR2(10),
+ STALK_COLOR_ABOBE_RING     VARCHAR2(10),
+ STALK_COLOR_BELOW_RING     VARCHAR2(10),
+ VEIL_TYPE                  VARCHAR2(10),
+ VEIL_COLOR                 VARCHAR2(10),
+ RING_NUMBER                VARCHAR2(10),
+ RING_TYPE                  VARCHAR2(10),
+ SPORE_PRINT_COLOR          VARCHAR2(10),
+ POPULATION                 VARCHAR2(10),
+ HABITAT                    VARCHAR2(10));
+ 
+-- EXAM182
+DROP TABLE HR_DATA;
+
+CREATE TABLE HR_DATA
+(EMP_ID                 NUMBER,
+ SATISFACTION_LEVEL     NUMBER,
+ LAST_EVALUATION        NUMBER,
+ NUMBER_PROJECT         NUMBER,
+ AVERAGE_MONTLY_HOURS   NUMBER,
+ TIME_SPEND_COMPANY     NUMBER,
+ WORK_ACCIDENT          NUMBER,
+ LEFT                   NUMBER,
+ PROMOTION_LAST_5YEARS  NUMBER,
+ SALES                  VARCHAR2(20),
+ SALARY                 VARCHAR2(20));
